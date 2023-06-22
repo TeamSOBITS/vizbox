@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 
 import json
 import signal
@@ -21,7 +21,7 @@ class ChallengeHandler(RequestHandler):
         self.backend = backend
 
     def get(self):
-        print "Rendering..."
+        print("Rendering...")
         self.render("challenge.html",
                     visualization="Robot camera image",
                     title=self.backend.title,
@@ -81,43 +81,69 @@ class MessageForwarder(WebSocketHandler):
         self.backend.detach_story(self.handle_story)
 
     def handle_operator_text(self, text):
-        print "handle_operator_text({})".format(text)
+        print("handle_operator_text({})".format(text))
 
-        data = {"label": "operator_text", "text": "Operator : "+text}
+        ioloop = IOLoop.current() #add event loop
+        ioloop.make_current()
+
+        text_str = text.encode().decode('utf-8')
+
+        data = {"label": "operator_text", "text": "Operator : "+text_str}
         data = json.dumps(data)
 
         self.write_message(data)
 
     def handle_robot_text(self, text):
-        print "handle_robot_text({})".format(text)
+        print("handle_robot_text({})".format(text))
 
-        data = {"label": "robot_text", "text": "Robot : "+text}
+        ioloop = IOLoop.current() #add event loop
+        ioloop.make_current()
+
+        text_str = text.encode().decode('utf-8')
+
+        data = {"label": "robot_text", "text": "Robot : "+text_str}
         data = json.dumps(data)
 
         self.write_message(data)
 
     def handle_challenge_step(self, step):
-        print "handle_challenge_step({})".format(step)
+        print("handle_challenge_step({})".format(step))
 
-        data = {"label": "challenge_step", "index": step}
+        ioloop = IOLoop.current() #add event loop
+        ioloop.make_current()
+
+        step_str = step.decode('utf-8')
+
+        data = {"label": "challenge_step", "index": step_str}
         data = json.dumps(data)
 
         self.write_message(data)
 
     def handle_image(self, image):
-        print "handle_image({})".format(len(image))
+        print("handle_image({})".format(len(image)))
 
-        data = {"label": "image", "image": image}
+        ioloop = IOLoop.current() #add event loop
+        ioloop.make_current()
+
+        image_str = image.decode('utf-8')
+
+        data = {"label": "image", "image": image_str}
         data = json.dumps(data)
 
         self.write_message(data)
 
     def handle_story(self, title_storyline):
-        print "handle_story({})".format(title_storyline)
+        print("handle_story({})".format(title_storyline))
+
+        ioloop = IOLoop.current() #add event loop
+        ioloop.make_current()
 
         title, storyline = title_storyline
 
-        data = {"label": "story", "title": title, "storyline": storyline}
+        title_str = title.decode('utf-8')
+        storyline_str = storyline.decode('utf-8')
+
+        data = {"label": "story", "title": title_str, "storyline": storyline_str}
         data = json.dumps(data)
 
         self.write_message(data)
@@ -132,7 +158,7 @@ if __name__ == "__main__":
     signal.signal(signal.SIGINT, handle_shutdown)
     signal.signal(signal.SIGQUIT, handle_shutdown) # SIGQUIT is send by our supervisord to stop this server.
     signal.signal(signal.SIGTERM, handle_shutdown) # SIGTERM is send by Ctrl+C or supervisord's default.
-    print "Shutdown handler connected"
+    print("Shutdown handler connected")
 
     app = Application([
         (r"/ws", MessageForwarder, {'backend': backend}),
@@ -144,18 +170,18 @@ if __name__ == "__main__":
     template_path="templates")
 
     address, port = "localhost", 8888
-    print "Application instantiated"
+    print("Application instantiated")
 
     connected = False
     while not connected:
         try:
-            print "Listening..."
+            print("Listening...")
             app.listen(port, address)
-            print "Listening on http://{addr}:{port}".format(addr=address, port=port)
+            print("Listening on http://{addr}:{port}".format(addr=address, port=port))
             connected = True
         except error as ex:
-            print "{ex}. Cannot start, trying in a bit".format(ex=ex)
+            print("{ex}. Cannot start, trying in a bit".format(ex=ex))
             time.sleep(1)
 
-    print "Starting IOLoop"
+    print("Starting IOLoop")
     IOLoop.instance().start()

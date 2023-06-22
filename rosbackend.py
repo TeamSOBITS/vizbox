@@ -1,3 +1,4 @@
+
 from backendbase import BackendBase, call_callbacks_in
 
 import rospy
@@ -8,7 +9,9 @@ import cv2
 import numpy as np
 from PIL import Image as pil_image
 import base64
-from StringIO import StringIO
+# from StringIO import StringIO
+# from io import StringIO
+from io import BytesIO
 
 try:
     from vizbox.msg import Story
@@ -47,7 +50,7 @@ class RosBackend(BackendBase):
 
         try:
             self.story_sub = rospy.Subscriber("story", Story, call_callbacks_in(self.on_story, lambda rosmsg: (rosmsg.title, rosmsg.storyline)), queue_size=100)
-        except NameError, e:
+        except NameError:
             rospy.logerr("To dynamically define a Story, catkin_make this package")
 
         self.cmd_pub = rospy.Publisher("command", String, queue_size=1)
@@ -81,7 +84,7 @@ class RosBackend(BackendBase):
         converted = pil_image.frombytes('RGB',
                                         (rosmsg.width, rosmsg.height),
                                         rosmsg.data)
-        string_buffer = StringIO()
+        string_buffer = BytesIO()
         converted.save(string_buffer, "png")
         image_bytes = string_buffer.getvalue()
         encoded = base64.standard_b64encode(image_bytes)
@@ -94,7 +97,7 @@ class RosBackend(BackendBase):
         flag = cv2.IMREAD_COLOR if cv2.__version__.split('.')[0] == '3' else cv2.CV_LOAD_IMAGE_COLOR
         encoded_img = cv2.imdecode(img_np_arr, flag)[:,:,::-1]
         converted = pil_image.fromarray(encoded_img)
-        string_buffer = StringIO()
+        string_buffer = BytesIO()
         converted.save(string_buffer, "png")
         image_bytes = string_buffer.getvalue()
         encoded = base64.standard_b64encode(image_bytes)
@@ -112,7 +115,7 @@ class RosBackend(BackendBase):
         b,g,r = converted_rgb.split()
         converted = pil_image.merge("RGB", (b,g,r))
 
-        string_buffer = StringIO()
+        string_buffer = BytesIO()
         converted.save(string_buffer, "png")
         image_bytes = string_buffer.getvalue()
         encoded = base64.standard_b64encode(image_bytes)
