@@ -5,6 +5,7 @@ import signal
 from socket import error
 
 import time
+import asyncio
 from tornado.ioloop import IOLoop
 from tornado.web import Application, RequestHandler, StaticFileHandler
 from tornado.websocket import WebSocketHandler
@@ -85,6 +86,7 @@ class MessageForwarder(WebSocketHandler):
 
         ioloop = IOLoop.current() #add event loop
         ioloop.make_current()
+
 
         text_str = text.encode().decode('utf-8')
 

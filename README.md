@@ -12,6 +12,30 @@ Additionally, the server accepts HTTP POSTs to which a command sentence can be s
 
 ![Screenshot](https://github.com/RoboCupAtHome/vizbox/blob/master/screenshot.png)
 
+Setup
+--------
+
+Tornado のインストール (バージョンに注意)
+
+```bash
+pip3 install tornado==6.3.2
+```
+
+How to use
+--------
+
+```bash
+$ roscore
+```
+```bash
+$ cd ~/catkin_ws/src/vizbox
+$ python3 server.py
+```
+```bash
+$ cd ~/catkin_ws/src/vizbox
+$ python3 sample_code.py
+```
+
 Backends
 --------
 

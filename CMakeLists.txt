@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.0.2)
 project(vizbox)
 
 find_package(catkin REQUIRED COMPONENTS
@@ -10,7 +10,7 @@ catkin_python_setup()
 add_message_files(
   DIRECTORY msg
   FILES
-    Story.msg
+  Story.msg
 )
 generate_messages(
   DEPENDENCIES
@@ -18,5 +18,5 @@ generate_messages(
 
 catkin_package(
   CATKIN_DEPENDS
-    message_runtime
+  message_runtime
 )
