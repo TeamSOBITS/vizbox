@@ -1,0 +1,5 @@
+<launch>
+
+<node pkg="vizbox" type="server.py" name="vizbox_server"  output="screen"/>
+
+</launch>

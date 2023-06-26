@@ -25,11 +25,7 @@ How to use
 --------
 
 ```bash
-$ roscore
-```
-```bash
-$ cd ~/catkin_ws/src/vizbox
-$ python3 server.py
+$ roslaunch vizbox server.launch
 ```
 ```bash
 $ cd ~/catkin_ws/src/vizbox
