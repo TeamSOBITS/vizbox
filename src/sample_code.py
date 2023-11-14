@@ -10,8 +10,6 @@ import cv2
 
 import rospkg
 
-img_pub_flag = "az"
-
 def pub_operator_text(msg):
     pub_OT = rospy.Publisher("/operator_text", String, queue_size=10)
     pub_OT.publish(msg)
@@ -24,31 +22,20 @@ def pub_challenge_step(msg):
     pub_CS = rospy.Publisher("/challenge_step", UInt32, queue_size=10)
     pub_CS.publish(msg)
 
-def change_img_pub_flag(msg):
-    global img_pub_flag
-    img_pub_flag = msg
-
 def pub_image():
-    global img_pub_flag, az_img, yolo_img
+    global img
     rospy.sleep(0.5)
     pub_Img = rospy.Publisher("/image", Image, queue_size=10)
 
-    pub_Img.publish(az_img)
+    pub_Img.publish(img)
 
-def az_callback(msg):
-    global az_img
-    cv2_az_img = CvBridge().imgmsg_to_cv2(msg, "bgr8")
-    img_rgb = cv2.cvtColor(cv2_az_img, cv2.COLOR_BGR2RGB)
-    az_img = CvBridge().cv2_to_imgmsg(img_rgb, "rgb8")
+def callback(msg):
+    global img
+    cv2_img = CvBridge().imgmsg_to_cv2(msg, "bgr8")
+    img_rgb = cv2.cvtColor(cv2_img, cv2.COLOR_BGR2RGB)
+    img = CvBridge().cv2_to_imgmsg(img_rgb, "rgb8")
 
-az_sub = rospy.Subscriber('/rgb/image_raw', Image, az_callback)
-
-def yolo_callback(msg):
-    global yolo_img
-    yolo_img = CvBridge().imgmsg_to_cv2(msg, "bgr8")
-
-yolo_sub = rospy.Subscriber('/yolov5/image_out', Image, yolo_callback)
-
+sub = rospy.Subscriber('/rgb/image_raw', Image, callback)
 
 if __name__ == "__main__":
     rospy.init_node('pub_to_vizbox')
