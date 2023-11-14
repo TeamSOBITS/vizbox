@@ -15,7 +15,7 @@ Additionally, the server accepts HTTP POSTs to which a command sentence can be s
 Setup
 --------
 
-Tornado のインストール (バージョンに注意)
+Tornado installation (note the version)
 
 ```bash
 pip3 install tornado==6.3.2
